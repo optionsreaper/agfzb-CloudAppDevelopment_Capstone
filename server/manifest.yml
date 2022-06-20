@@ -1,11 +1,11 @@
   applications:
-  - name: djangoapp
+  - name: se-capstone-djangoapp
     routes:
-      - route: $HOST.$DOMAIN
+      - route: se-capstone-djangoapp.us-east.mybluemix.net
     memory: 128M
     buildpack: python_buildpack
   - name: djangoapp-nginx
     routes:
-      - route: $HOST.$DOMAIN/static
+      - route: se-capstone-djangoapp.us-east.mybluemix.net/static
     memory: 128M
     buildpack: staticfile_buildpack
