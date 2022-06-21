@@ -2,6 +2,7 @@ import requests
 import json
 from .models import CarDealer
 from requests.auth import HTTPBasicAuth
+import urllib.parse
 
 
 # Create a `get_request` to make HTTP GET requests
@@ -10,8 +11,14 @@ def get_request(url, **kwargs):
     print(kwargs)
     print("GET from {} ".format(url))
     try:
-        # Call get method of requests library with URL and parameters
-        response = requests.get(url, headers={'Content-Type': 'application/json'},
+        if 'apikey' in kwargs:
+            print('auth')
+        #     # Basic authentication GET   
+            response = request.get(url, headers={'Content-Type': 'application/json'},
+                params=kwargs, auth=HTTPBasicAuth('apikey', kwargs['api_key']))
+        else:
+            # Call get method of requests library with URL and parameters
+            response = requests.get(url, headers={'Content-Type': 'application/json'},
                                     params=kwargs)
     except:
         # If any error occurs
@@ -79,15 +86,32 @@ def get_dealer_reviews_from_cf(url, dealer_id):
                 review_obj.car_model=review_doc['car_model']
                 review_obj.car_year=review_doc['car_year']
 
+            # review_obj.sentiment = analyze_review_sentiments(review_obj.review)
             results.append(review_obj)
 
     return results
 
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
-# def analyze_review_sentiments(text):
+def analyze_review_sentiments(text):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
-
+    # params = dict()
+    # params["text"] = kwargs["text"]
+    # params["version"] = kwargs["version"]
+    # params["features"] = kwargs["features"]
+    # params["return_analyzed_text"] = kwargs["return_analyzed_text"]
+    response = get_request(
+        "url/v1/analyze",
+        {
+            "api_key": "api",
+            "version": "2022-04-07",
+            "text": urllib.parse.quote(text),
+            "features": ["sentiment"]
+        }
+    )
+    return response
+    # response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
+    #                                 auth=HTTPBasicAuth('apikey', api_key))
 
 
