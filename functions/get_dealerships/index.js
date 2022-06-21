@@ -11,37 +11,44 @@ async function main(params) {
         authenticator: authenticator
     });
     cloudant.setServiceUrl(params.COUCH_URL);
-    try {
+    let output = []
+    if (params.state) {
         let selector = (params.state) ? {st:params.state} : {}
-        let output = await getStateSpecificDoc(cloudant,selector)
+        output = await getStateSpecificDoc(cloudant,selector).catch(respondWithError)
+        if (output.length === 0) 
+            return {
+                statusCode:404,
+                headers:{ 'Content-Type': 'text/plain'},
+                body:"The state does not exist"
+            }
+    } else {
+        output = await getAllDocs(cloudant).catch(respondWithError)
         if (output.length === 0) 
             return {
                 statusCode:404,
                 headers:{ 'Content-Type': 'text/plain'},
                 body:"Database is empty"
             }
-
-        return {
-            statusCode:200,
-            headers:{ 'Content-Type': 'application/json'},
-            body: output
-        }  
-    } catch (error) {
-        return {
-            statusCode:500,
-            headers:{ 'Content-Type': 'text/plain'},
-            body:"Something went wrong on the server"
-        }
     }
+
+    return {
+        statusCode:200,
+        headers:{ 'Content-Type': 'application/json'},
+        body: output
+    }  
 }
 
 async function getAllDocs(cloudant) {
-    let rows = (await cloudant.postAllDocs({db:'dealerships', includeDocs:true})).result.rows
+    let rows = (
+        await cloudant.postAllDocs({db:'dealerships', includeDocs:true}).catch(respondWithError)
+    ).result.rows
     return rows.map(({doc}) => formatResponse(doc))
 }
 
 async function getStateSpecificDoc(cloudant, selector) {
-    let rows = (await cloudant.postFind({db:'dealerships', selector})).result.docs
+    let rows = (
+        await cloudant.postFind({db:'dealerships', selector}).catch(respondWithError)
+    ).result.docs
     return rows.map(formatResponse)
 }
 
@@ -58,3 +65,10 @@ function formatResponse(doc) {
     }
 }
 
+function respondWithError() {
+    return {
+        statusCode:500,
+        headers:{ 'Content-Type': 'text/plain'},
+        body:"Something went wrong on the server"
+    }
+}
