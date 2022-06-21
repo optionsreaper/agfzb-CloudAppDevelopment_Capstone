@@ -99,8 +99,5 @@ class DealerReview:
     def __str__(self):
         return "Dealer name: " + self.name
 
-    def get_purchase_year(self):
-        return self.purchase_date.split('/')[-1]
-
     def get_sentiment(self):
         return self.sentiment
