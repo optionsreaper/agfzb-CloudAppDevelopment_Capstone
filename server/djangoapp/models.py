@@ -10,8 +10,8 @@ from django.utils.timezone import now
 # - Any other fields you would like to include in car make model
 # - __str__ method to print a car make object
 class CarMake(models.Model):
-    name: models.TextField(null=False)
-    description: models.TextField(null=False)
+    name = models.CharField(null=False, max_length=20)
+    description = models.TextField(null=False)
 
     def __str__(self):
         return "Name: " + self.name + ", " + \
@@ -35,17 +35,17 @@ class CarModel(models.Model):
         (SUV, "SUV"),
         (WAGON, "Wagon")
     ]
-    car_make: models.ForeignKey(CarMake, on_delete=models.CASCADE)
-    name: models.TextField(null=False)
-    dealer_id: models.IntegerField(null=False)
-    type: models.CharField(null=False, choices=MODEL_TYPES, default=SEDAN, max_length=20)
-    year: models.DateField(null=False)
+    car_make = models.ForeignKey(CarMake, on_delete=models.CASCADE)
+    name = models.CharField(null=False, max_length=20)
+    dealer_id = models.IntegerField(null=False)
+    type = models.CharField(null=False, choices=MODEL_TYPES, default=SEDAN, max_length=20)
+    year = models.DateField(null=False)
 
     def __str__(self):
         return "Name: " + self.name + ", " + \
-               "Dealer ID: " + self.dealer_id + ", " + \
-                "Type: " + self.type + ", " + \
-                "Year: " + self.year
+               "Dealer ID: " + str(self.dealer_id) + ", " + \
+               "Type: " + self.type + ", " + \
+               "Year: " + str(self.year.year)
 
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
