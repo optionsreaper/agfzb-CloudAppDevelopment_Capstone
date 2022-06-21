@@ -121,23 +121,13 @@ def add_review(request, dealer_id):
         review['car_model'] = "Focus"
         review['car_year'] = 2022
 
-        # "id": 1114,
-        # "name": "Upkar Lidder",
-        # "dealership": 15,
-        # "review": "Great service!",
-        # "purchase": false,
-        # "another": "field",
-        # "purchase_date": "02/16/2021",
-        # "car_make": "Audi",
-        # "car_model": "Car",
-        # "car_year": 2021
         response = post_request(
             "https://service.us-east.apiconnect.ibmcloud.com/gws/apigateway/api/b73938815ec4d43668ee02ab0fcc2c453c1bda76461a933f88ec0e85eb036e0b/api/review",
             json_payload=json.dumps({"review":review}),
             dealerId=dealer_id
         )
         print(response)
-        return HttpResponse(response)
+        return HttpResponse(response['message'])
         
     else:
         return HttpResponse("You must be logged in")
