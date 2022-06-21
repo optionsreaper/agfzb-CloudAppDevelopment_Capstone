@@ -7,7 +7,7 @@
 # @return The output of this action, which must be a JSON object.
 #
 #
-from ibmcloudant.cloudant_v1 import CloudantV1, Document
+from ibmcloudant.cloudant_v1 import CloudantV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_cloud_sdk_core import ApiException
 import requests
@@ -20,20 +20,23 @@ def main(dict):
         authenticator = IAMAuthenticator(dict['IAM_API_KEY'])
         client = CloudantV1(authenticator=authenticator)
         client.set_service_url(dict['COUCH_URL'])
-        
-        new_review = Document(
-            id=str(dict['review']['id']),
-            name=dict['review']['name'],
-            dealership=dict['review']['dealership'],
-            review=dict['review']['review'],
-            purchase=dict['review']['purchase'],
-            another=dict['review']['another'],
-            purchase_date=dict['review']['purchase_date'],
-            car_make=dict['review']['car_make'],
-            car_model=dict['review']['car_model'],
-            car_year=dict['review']['car_year']
-        )
 
+        print(dict)
+
+        new_review = {
+            "id":dict['review']['id'],
+            "name":dict['review']['name'],
+            "dealership":dict['review']['dealership'],
+            "review":dict['review']['review'],
+            "purchase":dict['review']['purchase'],
+            "another":dict['review']['another'],
+            "purchase_date":dict['review']['purchase_date'],
+            "car_make":dict['review']['car_make'],
+            "car_model":dict['review']['car_model'],
+            "car_year":dict['review']['car_year']
+        }
+
+        print(new_review)
         response = client.post_document(db='reviews', document=new_review).get_result()
 
         return {
