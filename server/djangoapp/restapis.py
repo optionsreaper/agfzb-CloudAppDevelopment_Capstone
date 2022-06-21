@@ -128,5 +128,7 @@ def analyze_review_sentiments(text):
         text=urllib.parse.quote(text),
         features="sentiment"
     )
+    if 'code' in response and response['code'] == 422:
+        return "neutral"
     print(response['sentiment']['document']['label'])
     return response['sentiment']['document']['label']
