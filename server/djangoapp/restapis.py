@@ -4,6 +4,8 @@ from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 import urllib.parse
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 # Create a `get_request` to make HTTP GET requests
