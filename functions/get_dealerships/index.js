@@ -61,7 +61,9 @@ function formatResponse(doc) {
         address: doc.address,
         zip: doc.zip,
         lat: doc.lat,
-        long: doc.long
+        long: doc.long,
+        full_name: doc.full_name,
+        short_name: doc.short_name
     }
 }
 
