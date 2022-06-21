@@ -103,12 +103,10 @@ def analyze_review_sentiments(text):
     # params["return_analyzed_text"] = kwargs["return_analyzed_text"]
     response = get_request(
         "url/v1/analyze",
-        {
-            "api_key": "api",
-            "version": "2022-04-07",
-            "text": urllib.parse.quote(text),
-            "features": ["sentiment"]
-        }
+        api_key="api",
+        version="2022-04-07",
+        text=urllib.parse.quote(text),
+        features=["sentiment"]
     )
     return response
     # response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
