@@ -10,6 +10,8 @@ env:
   IBM_CLOUD_ORG: Schreck Engineering
   MANIFEST_NAME: manifest.yml
   IBM_CLOUD_API: ${{secrets.IBM_CLOUD_API_KEY}}
+  NLU_API_KEY: ${{secrets.NLU_API_KEY}}
+  NLU_URL: ${{secrets.NLU_URL}}
 
 defaults:
   run:
@@ -40,6 +42,9 @@ jobs:
         shell: bash
       - name: List all applications
         run: ibmcloud cf apps
+        shell: bash
+      - name: Copy env variables
+        run: printf "NLU_API_KEY=$NLU_API_KEY" >> ./.env && printf "NLU_URL=$NLU_URL" >> ./.env
         shell: bash
       - name: Deploy manifest file
         run: ibmcloud cf push -f ./$MANIFEST_NAME
