@@ -1,6 +1,6 @@
 import requests
 import json
-from .models import CarDealer
+from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 import urllib.parse
 import os
@@ -86,7 +86,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
             # Get its content in `doc` object
             review_doc = review#["doc"]
             # Create a CarDealer object with values in `doc` object
-            review_obj = CarDealer(
+            review_obj = DealerReview(
                 dealership=review_doc['dealership'],
                 name=review_doc['name'],
                 purchase=review_doc['purchase'],
