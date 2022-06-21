@@ -128,16 +128,17 @@ def add_review(request, dealer_id):
         return render(request, 'djangoapp/add_review.html', context)
     if request.method == "POST":
         if request.user.is_authenticated:
+            print(str(request.POST['purchasedate']))
             review = {}
-            review['id'] = 12345
             review['name'] = f"{request.user.first_name} {request.user.last_name}"
             review['dealership'] = dealer_id
-            review['review'] = "This review is the best one out there!"
-            review['purchase'] = False
-            review['purchase_date'] = '01/01/2022'
-            review['car_make'] = "Ford"
-            review['car_model'] = "Focus"
-            review['car_year'] = 2022
+            review['review'] = request.POST['content']
+            review['purchase'] = (request.POST['purchasecheck'] == 'on')
+            review['purchase_date'] = str(request.POST['purchasedate'])
+            car = get_object_or_404(CarModel, pk=request.POST['car'])
+            review['car_make'] = car.car_make.name
+            review['car_model'] = car.name
+            review['car_year'] = str(car.year)
 
             response = post_request(
                 "https://service.us-east.apiconnect.ibmcloud.com/gws/apigateway/api/b73938815ec4d43668ee02ab0fcc2c453c1bda76461a933f88ec0e85eb036e0b/api/review",
@@ -145,7 +146,7 @@ def add_review(request, dealer_id):
                 dealerId=dealer_id
             )
             print(response)
-            return HttpResponse(response['message'])
+            return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
             
         else:
             return HttpResponse("You must be logged in")

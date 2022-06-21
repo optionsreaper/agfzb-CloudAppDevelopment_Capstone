@@ -90,9 +90,10 @@ def get_dealer_reviews_from_cf(url, dealer_id):
                 dealership=review_doc['dealership'],
                 name=review_doc['name'],
                 purchase=review_doc['purchase'],
-                review=review_doc['review'],
-                id=review_doc['id']
+                review=review_doc['review']
             )
+            if 'id' in review_doc:
+                review_obj.id=review_doc['id']
             if 'car_make' in review_doc:
                 review_obj.car_make=review_doc['car_make']
             if 'car_model' in review_doc:

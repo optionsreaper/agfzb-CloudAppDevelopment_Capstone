@@ -39,13 +39,13 @@ class CarModel(models.Model):
     name = models.CharField(null=False, max_length=20)
     dealer_id = models.IntegerField(null=False)
     type = models.CharField(null=False, choices=MODEL_TYPES, default=SEDAN, max_length=20)
-    year = models.DateField(null=False)
+    year = models.IntegerField(null=False, default=2022)
 
     def __str__(self):
         return "Name: " + self.name + ", " + \
                "Dealer ID: " + str(self.dealer_id) + ", " + \
                "Type: " + self.type + ", " + \
-               "Year: " + str(self.year.year)
+               "Year: " + str(self.year)
 
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
@@ -90,12 +90,11 @@ class DealerReview:
         self.sentiment = sentiment
         self.id = id
 
-    def __init__(self, dealership, name, purchase, review, id):
+    def __init__(self, dealership, name, purchase, review):
         self.dealership = dealership
         self.name = name
         self.purchase = purchase
         self.review = review
-        self.id = id
 
     def __str__(self):
         return "Dealer name: " + self.name
