@@ -11,6 +11,7 @@ from ibmcloudant.cloudant_v1 import CloudantV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_cloud_sdk_core import ApiException
 import requests
+import json
 
 
 def main(dict):
@@ -22,18 +23,18 @@ def main(dict):
         client.set_service_url(dict['COUCH_URL'])
 
         print(dict)
+        body = json.loads(dict['__ow_body'])
 
         new_review = {
-            "id":dict['review']['id'],
-            "name":dict['review']['name'],
-            "dealership":dict['review']['dealership'],
-            "review":dict['review']['review'],
-            "purchase":dict['review']['purchase'],
-            "another":dict['review']['another'],
-            "purchase_date":dict['review']['purchase_date'],
-            "car_make":dict['review']['car_make'],
-            "car_model":dict['review']['car_model'],
-            "car_year":dict['review']['car_year']
+            "id":body['review']['id'],
+            "name":body['review']['name'],
+            "dealership":body['review']['dealership'],
+            "review":body['review']['review'],
+            "purchase":body['review']['purchase'],
+            "purchase_date":body['review']['purchase_date'],
+            "car_make":body['review']['car_make'],
+            "car_model":body['review']['car_model'],
+            "car_year":body['review']['car_year']
         }
 
         print(new_review)
@@ -42,7 +43,7 @@ def main(dict):
         return {
             "statusCode":200,
             "headers":{ 'Content-Type': 'application/json'},
-            "body": "Successfully added"
+            "body": {"message":"Successfully added"}
         }
 
     except ApiException as ae:
@@ -55,6 +56,6 @@ def main(dict):
     except:
         return {
             "statusCode":500,
-            "headers":{ 'Content-Type': 'text/plain'},
-            "body": "Something went wrong on the server"
+            "headers":{ 'Content-Type': 'application/json'},
+            "body": {"message":"Something went wrong on the server"}
         }

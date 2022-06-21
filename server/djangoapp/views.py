@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf
+from .restapis import get_dealers_from_cf, get_dealer_reviews_from_cf, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -107,6 +107,39 @@ def get_dealer_details(request, dealer_id):
         return HttpResponse(dealer_details)
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):
+    # if request.method == "POST":
+    if request.user.is_authenticated:
+        review = {}
+        review['id'] = 12345
+        review['name'] = f"{request.user.first_name} {request.user.last_name}"
+        review['dealership'] = dealer_id
+        review['review'] = "This review is the best one out there!"
+        review['purchase'] = False
+        review['purchase_date'] = '01/01/2022'
+        review['car_make'] = "Ford"
+        review['car_model'] = "Focus"
+        review['car_year'] = 2022
+
+        # "id": 1114,
+        # "name": "Upkar Lidder",
+        # "dealership": 15,
+        # "review": "Great service!",
+        # "purchase": false,
+        # "another": "field",
+        # "purchase_date": "02/16/2021",
+        # "car_make": "Audi",
+        # "car_model": "Car",
+        # "car_year": 2021
+        response = post_request(
+            "https://service.us-east.apiconnect.ibmcloud.com/gws/apigateway/api/b73938815ec4d43668ee02ab0fcc2c453c1bda76461a933f88ec0e85eb036e0b/api/review",
+            json_payload=json.dumps({"review":review}),
+            dealerId=dealer_id
+        )
+        print(response)
+        return HttpResponse(response)
+        
+    else:
+        return HttpResponse("You must be logged in")
+    return HttpResponse(request.user.is_authenticated)
 
