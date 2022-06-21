@@ -24,9 +24,10 @@ def main(dict):
 
         print(dict)
         body = json.loads(dict['__ow_body'])
+        print(body)
 
         new_review = {
-            "id":body['review']['id'],
+        #     # "id":body['review']['id'],
             "name":body['review']['name'],
             "dealership":body['review']['dealership'],
             "review":body['review']['review'],

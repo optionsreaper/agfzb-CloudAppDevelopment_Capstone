@@ -28,21 +28,26 @@ def main(dict):
                 selector={"dealership":int(dict["dealerId"])}
             ).get_result()["docs"]
 
-            if len(response) != 0:
-                dealer_response = client.post_find(
+            dealer_response = client.post_find(
                     db='dealerships',
                     selector={"id":int(dict["dealerId"])},
                     fields=['full_name']
                 ).get_result()["docs"][0]["full_name"]
-                final_response = {
-                    "dealer_name": dealer_response,
-                    "reviews": response
-                }
-                return {
-                    "statusCode":200,
-                    "headers":{ 'Content-Type': 'application/json'},
-                    "body": final_response
-                }
+
+            final_response = {
+                "dealer_name": dealer_response,
+            }
+
+            if len(response) != 0:
+                final_response["reviews"] = response
+            else:
+                final_response["reviews"] = []
+                
+            return {
+                "statusCode":200,
+                "headers":{ 'Content-Type': 'application/json'},
+                "body": final_response
+            }
 
         return {
             "statusCode":404,
