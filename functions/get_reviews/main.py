@@ -29,10 +29,19 @@ def main(dict):
             ).get_result()["docs"]
 
             if len(response) != 0:
+                dealer_response = client.post_find(
+                    db='dealerships',
+                    selector={"id":int(dict["dealerId"])},
+                    fields=['full_name']
+                ).get_result()["docs"][0]["full_name"]
+                final_response = {
+                    "dealer_name": dealer_response,
+                    "reviews": response
+                }
                 return {
                     "statusCode":200,
                     "headers":{ 'Content-Type': 'application/json'},
-                    "body": response
+                    "body": final_response
                 }
 
         return {

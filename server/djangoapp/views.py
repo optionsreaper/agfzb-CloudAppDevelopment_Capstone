@@ -106,32 +106,38 @@ def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         url = "https://service.us-east.apiconnect.ibmcloud.com/gws/apigateway/api/b73938815ec4d43668ee02ab0fcc2c453c1bda76461a933f88ec0e85eb036e0b/api/review"
         dealer_details = get_dealer_reviews_from_cf(url, dealer_id)
-        return HttpResponse(dealer_details)
+        context = {
+            "dealer_id": dealer_id,
+            "dealer_details":dealer_details
+        }
+        return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
-    # if request.method == "POST":
-    if request.user.is_authenticated:
-        review = {}
-        review['id'] = 12345
-        review['name'] = f"{request.user.first_name} {request.user.last_name}"
-        review['dealership'] = dealer_id
-        review['review'] = "This review is the best one out there!"
-        review['purchase'] = False
-        review['purchase_date'] = '01/01/2022'
-        review['car_make'] = "Ford"
-        review['car_model'] = "Focus"
-        review['car_year'] = 2022
+    if request.method == "POST":
+        if request.user.is_authenticated:
+            review = {}
+            review['id'] = 12345
+            review['name'] = f"{request.user.first_name} {request.user.last_name}"
+            review['dealership'] = dealer_id
+            review['review'] = "This review is the best one out there!"
+            review['purchase'] = False
+            review['purchase_date'] = '01/01/2022'
+            review['car_make'] = "Ford"
+            review['car_model'] = "Focus"
+            review['car_year'] = 2022
 
-        response = post_request(
-            "https://service.us-east.apiconnect.ibmcloud.com/gws/apigateway/api/b73938815ec4d43668ee02ab0fcc2c453c1bda76461a933f88ec0e85eb036e0b/api/review",
-            json_payload=json.dumps({"review":review}),
-            dealerId=dealer_id
-        )
-        print(response)
-        return HttpResponse(response['message'])
-        
-    else:
-        return HttpResponse("You must be logged in")
-    return HttpResponse(request.user.is_authenticated)
+            response = post_request(
+                "https://service.us-east.apiconnect.ibmcloud.com/gws/apigateway/api/b73938815ec4d43668ee02ab0fcc2c453c1bda76461a933f88ec0e85eb036e0b/api/review",
+                json_payload=json.dumps({"review":review}),
+                dealerId=dealer_id
+            )
+            print(response)
+            return HttpResponse(response['message'])
+            
+        else:
+            return HttpResponse("You must be logged in")
+
+    context = {}
+    return render(request, 'djangoapp/add_review.html', context)
 

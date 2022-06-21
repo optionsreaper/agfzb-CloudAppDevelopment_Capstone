@@ -80,7 +80,7 @@ def get_dealer_reviews_from_cf(url, dealer_id):
     # Call get_request with a URL parameter
     json_result = get_request(url, dealerId=dealer_id)
     if json_result:
-        reviews = json_result#["rows"]
+        reviews = json_result["reviews"]
         # For each dealer object
         for review in reviews:
             # Get its content in `doc` object
@@ -93,16 +93,27 @@ def get_dealer_reviews_from_cf(url, dealer_id):
                 review=review_doc['review'],
                 id=review_doc['id']
             )
-            if (review_obj.purchase):
-                review_obj.purchase_date=review_doc['purchase_date']
+            if 'car_make' in review_doc:
                 review_obj.car_make=review_doc['car_make']
+            if 'car_model' in review_doc:
                 review_obj.car_model=review_doc['car_model']
+            if 'car_year' in review_doc:
                 review_obj.car_year=review_doc['car_year']
-
+            if 'purchase_date' in review_doc:
+                review_obj.purchase_date=review_doc['purchase_date']
+                
             review_obj.sentiment = analyze_review_sentiments(review_obj.review)
+            print(review_obj.sentiment)
             results.append(review_obj)
-
-    return results
+        return {
+            "dealer_name": json_result["dealer_name"],
+            "reviews": results
+        }
+    return {
+        "dealer_name": "Not Found",
+        "reviews": results
+    }
+    
 
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
@@ -116,4 +127,5 @@ def analyze_review_sentiments(text):
         text=urllib.parse.quote(text),
         features="sentiment"
     )
+    print(response['sentiment']['document']['label'])
     return response['sentiment']['document']['label']
