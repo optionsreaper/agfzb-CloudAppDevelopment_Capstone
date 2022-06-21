@@ -41,6 +41,12 @@ jobs:
       - name: List all applications
         run: ibmcloud cf apps
         shell: bash
+      - name: 'Create env file'
+        run: |
+          touch .env
+          echo NLU_API_KEY=${{ secrets.NLU_API_KEY }} >> .env
+          echo NLU_URL=${{ secrets.NLU_URL }} >> .env
+          cat .env
       - name: Deploy manifest file
         run: ibmcloud cf push -f ./$MANIFEST_NAME
         shell: bash
